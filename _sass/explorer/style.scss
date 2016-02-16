@@ -540,6 +540,19 @@
   .slick-dots {
     bottom: inherit;
     top: 0px;
+    li {
+      button {
+        &:hover:before,
+        &:focus:before{
+          opacity: 0.25;
+        }
+      }
+      &.slick-active{
+        button:before{
+          opacity: 0.75 !important;
+        }
+      }
+    }
   }
 }
 
