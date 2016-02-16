@@ -759,15 +759,9 @@ Object.byString = function(o, s) {
     var Tooltip = function(el){
         var self = this;
         self.el = el;
-        self.tooltipDiv = $('<div class="param-tooltip">' + self.el.find('input').attr('id') + '</div>').hide();
+        self.tooltipDiv = $('<div class="param-tooltip">' + self.el.find('input').attr('id') + '</div>');
         self.init = function(){
             self.el.append(self.tooltipDiv);
-            self.el.find('input').on('mouseenter', function(){
-                self.tooltipDiv.fadeIn(200);
-            });
-            self.el.find('input').on('mouseleave', function(){
-                self.tooltipDiv.fadeOut(200);
-            });
         };
         self.init();
     };

@@ -183,7 +183,13 @@
   #primary-column{
     .parameter-item{
       margin-bottom: 10px;
+      &:hover{
+        .param-tooltip{
+          opacity: 1 !important;
+        }
+      }
       .param-tooltip{
+        opacity: 0;
         position: absolute;
         background: $n1-grey-color;
         color: $white;
@@ -191,6 +197,7 @@
         border-radius: 3px;
         top: -40px;
         right: 15px;
+        @include tm-transition();
         &:after{
           content: '';
           width: 0px;
