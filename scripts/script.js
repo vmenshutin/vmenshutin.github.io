@@ -383,8 +383,8 @@ Object.byString = function(o, s) {
 
                 if (subcolumn["map"]){ // does subcolumn have latitude and longitude for map popup?
                     var coordinatesDestination = subcolumn["map"]["coordinates"]["path"] ? Object.byString(destinationObject,  subcolumn["map"]["coordinates"]["path"]) : destinationObject, // if field has its additional path
-                        dataLat = coordinatesDestination[subcolumn["map"]["coordinates"]["latitude"]], // latitude
-                        dataLng = coordinatesDestination[subcolumn["map"]["coordinates"]["longitude"]], // longitude
+                        dataLat = coordinatesDestination ? coordinatesDestination[subcolumn["map"]["coordinates"]["latitude"]] : 'undefined', // latitude
+                        dataLng = coordinatesDestination ? coordinatesDestination[subcolumn["map"]["coordinates"]["longitude"]] : 'undefined', // longitude
                         mapBtn = $('<a href="#" class="api-map-btn pull-right" data-lat="' + dataLat + '" data-long="' + dataLng + '"></a>'),
                         subColumnMapImage;
 
