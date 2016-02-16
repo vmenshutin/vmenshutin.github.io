@@ -182,7 +182,9 @@ Object.byString = function(o, s) {
         });
         // fall back for ios touch devices to hide tooltip on mouseleave
         $('body').on('touchstart', function(e){
-            $(".param-tooltip").fadeOut(200);
+            e.stopPropagation(); // prevent event from bubbling
+            if (!$(e.target).hasClass('event-param')) // if it is not a parameter input
+                $(".param-tooltip").fadeOut(200); // hide all tooltips
         });
     };
 
@@ -769,7 +771,6 @@ Object.byString = function(o, s) {
             self.el.find('input').on('mouseenter touchstart', function(e){
                 $('.param-tooltip:visible').fadeOut(200);
                 self.tooltipDiv.fadeIn(200);
-                e.stopPropagation();
             });
             self.el.find('input').on('mouseleave', function(){
                 self.tooltipDiv.fadeOut(200);
