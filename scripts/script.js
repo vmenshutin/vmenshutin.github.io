@@ -376,9 +376,24 @@ Object.byString = function(o, s) {
                 }
 
                 if (subcolumn["map"]){ // does subcolumn have latitude and longitude for map popup?
-                    var coordinatesDestination = subcolumn["map"]["path"] ? Object.byString(destinationObject,  subcolumn["map"]["path"]) : destinationObject, // if field has its additional path
-                        mapBtn = $('<a href="#" class="api-map-btn pull-right" data-lat="' + coordinatesDestination[subcolumn["map"]["latitude"]] + '" data-long="' + coordinatesDestination[subcolumn["map"]["longitude"]] + '"></a>'),
-                        subColumnMapImage = getMapImage(coordinatesDestination[subcolumn["map"]["latitude"]], coordinatesDestination[subcolumn["map"]["longitude"]]); // map image to be appended to column
+                    var coordinatesDestination = subcolumn["map"]["coordinates"]["path"] ? Object.byString(destinationObject,  subcolumn["map"]["coordinates"]["path"]) : destinationObject, // if field has its additional path
+                        dataLat = coordinatesDestination[subcolumn["map"]["coordinates"]["latitude"]], // latitude
+                        dataLng = coordinatesDestination[subcolumn["map"]["coordinates"]["longitude"]], // longitude
+                        mapBtn = $('<a href="#" class="api-map-btn pull-right" data-lat="' + dataLat + '" data-long="' + dataLng + '"></a>'),
+                        subColumnMapImage;
+
+                    if (dataLat != 'undefined' && dataLng != 'undefined' && dataLat && dataLng)
+                        subColumnMapImage = getMapImage(dataLat, dataLng); // map image to be appended to column
+                    else { // if there are no coordinates available form map by address
+                        var address = '';
+                        for (var field in subcolumn["map"]["address"]){
+                            var fieldDestination = subcolumn["map"]["address"][field]["path"] ?  Object.byString(destinationObject,  subcolumn["map"]["address"][field]["path"]) : destinationObject; // if field has its own destination
+                            address += fieldDestination[subcolumn["map"]["address"][field]["id"]] + ','; // form address string
+                        }
+                        address = address.substring(0, address.length - 1); // remove last coma
+                        mapBtn.attr('data-address', address);
+                        subColumnMapImage = getMapImage(null, null, address); // map image to be appended to column
+                    }
 
                     mapBtn.on('click', function(e){
                         mapPopUpListener(e);
@@ -521,31 +536,83 @@ Object.byString = function(o, s) {
     };
 
     // generates image element with google map
-    var getMapImage = function(lat, lng){
-        if (lat != 'undefined' && lng != 'undefined' && lat && lng){
+    var getMapImage = function(lat, lng, address){
+        var coordinates = address ? address : (lat && lng ? (lat + ',' + lng) : '');
+        if (coordinates){
             var dividor = slider.slick('slickGetOption', 'slidesToShow'),
                 width = Math.ceil(parseFloat(slider.width() / dividor - 32)),
                 height = 400,
                 url = 'https://maps.googleapis.com/maps/api/staticmap?center=' + // base url
-                    lat + ',' + lng + '&' // coordinates
+                    coordinates + '&' // coordinates
                     + 'zoom=8' + '&' //zoom
                     + 'size=' + width + 'x' + height + '&' //size
                     + 'format=JPEG' + '&'// image format
-                    + 'markers=color:red%7Clabel:V%7C' + lat + ',' + lng + '&' // marker with the same coordinates with V label
+                    + 'markers=color:red%7Clabel:V%7C' + coordinates + '&' // marker with the same coordinates with V label
                     + 'key=AIzaSyB3-oFbQWw_jEcG7r7WGdi99jNT3DqvRas'; // api key (vmfreakmonkey@gmail.com)
 
-            return $('<img data-lat="' + lat + '" data-long="' + lng + '" class="api-column-map-image" src="' + url + '">');
+            return $('<img data-lat="' + lat + '" data-long="' + lng + '" data-address="' + address + '" class="api-column-map-image" src="' + url + '">');
         }
         else
             return false;
     };
 
+    // shows google maps popup
+    var showMapPopup = function(lat, lng, address){
+        var map,
+            marker,
+            mapEl = $('#map-popup'),
+            geocoder = new google.maps.Geocoder(),
+            latLng = (lat && lng ? {lat: lat, lng: lng} : new google.maps.LatLng(0, 0));
+
+        // initialize map object
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: latLng,
+            zoom: 8
+        });
+        if (address){ // if there was address provided
+            geocodeAddress(geocoder, map, address, function(result){ // geocode address and center the map
+                latLng = result;
+            });
+        }
+        else { // if not (means lat and long were provided)
+            marker = new google.maps.Marker({ //Create a marker and set its position.
+                map: map,
+                position: latLng
+            });
+        }
+        // when map popup is shown
+        mapEl.on("shown.bs.modal", function () {
+            google.maps.event.trigger(map, "resize");
+            // Recenter the map now that it's been redrawn
+            map.setCenter(latLng);
+        });
+        mapEl.modal(); // show map popup
+    };
+
+    // translates address into lat/long
+    var geocodeAddress = function(geocoder, map, address, callback) {
+        geocoder.geocode({'address': address}, function(results, status) {
+            if (status === google.maps.GeocoderStatus.OK) {
+                map.setCenter(results[0].geometry.location);
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location
+                });
+                callback(results[0].geometry.location);
+            } else {
+                showErrorPopup("Coordinates are not defined :(");
+            }
+        });
+    };
+
     // map or button click listener
     var mapPopUpListener = function(e){
         e.preventDefault();
-        if ($(e.target).attr('data-lat') != "undefined"
-            && $(e.target).attr('data-long') != "undefined")
-            showMapPopup(parseFloat($(e.target).attr('data-lat')), parseFloat($(e.target).attr('data-long')));
+        var lat = $(e.target).attr('data-lat') != "undefined" ? parseFloat($(e.target).attr('data-lat')) : null,
+            lng = $(e.target).attr('data-long') != "undefined" ? parseFloat($(e.target).attr('data-long')) : null,
+            address = lat && lng ? null : $(e.target).attr('data-address');
+        if (lat && lng || address)
+            showMapPopup(lat, lng, address);
         else
             showErrorPopup("Coordinates are not defined :(");
     };
@@ -577,36 +644,6 @@ Object.byString = function(o, s) {
             fillInInputVals();
             scroll(); // scroll to slider if necessary and run callback
         }
-    };
-
-    // shows google maps popup
-    var showMapPopup = function(lat, lng){
-        var latLong,
-            map,
-            marker,
-            mapEl = $('#map-popup');
-
-        // Create a map object and specify the DOM element for display.
-        latLong = {
-            lat: lat,
-            lng: lng
-        };
-        map = new google.maps.Map(document.getElementById('map'), {
-            center: latLong,
-            zoom: 8
-        });
-        //Create a marker and set its position.
-        marker = new google.maps.Marker({
-            map: map,
-            position: latLong
-        });
-        mapEl.on("shown.bs.modal", function () {
-            google.maps.event.trigger(map, "resize");
-            // Recenter the map now that it's been redrawn
-            var reCenter = new google.maps.LatLng(lat, lng);
-            map.setCenter(reCenter);
-        });
-        mapEl.modal();
     };
 
     // gets current column count in slider
