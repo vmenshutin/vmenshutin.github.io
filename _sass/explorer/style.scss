@@ -111,23 +111,41 @@
       margin-top: 11px;
       margin-right: 5px;
     }
-    &.column-gray {
+    &.column-color-1 {
       @include colored-column($n2-grey-color);
     }
-    &.column-purple {
+    &.column-color-2 {
+      @include colored-column(#7d3e9b);
+    }
+    &.column-color-3 {
+      @include colored-column(#c05785);
+    }
+    &.column-color-4 {
+      @include colored-column(#a3a64f);
+    }
+    &.column-color-5 {
+      @include colored-column(#d0236f);
+    }
+    &.column-color-6 {
       @include colored-column($s1b);
     }
-    &.column-pink {
-      @include colored-column($secondary-color1);
+    &.column-color-7 {
+      @include colored-column(#4fb9b5);
     }
-    &.column-green {
-      @include colored-column($apple-green);
+    &.column-color-8 {
+      @include colored-column(#b94f5e);
     }
-    &.column-dark {
-      @include colored-column($n1);
+    &.column-color-9 {
+      @include colored-column(#545db1);
     }
-    &.column-blue {
-      @include colored-column($p1b);
+    &.column-color-10 {
+      @include colored-column(#57ad56);
+    }
+    &.column-color-11 {
+      @include colored-column(#dba555);
+    }
+    &.column-color-12 {
+      @include colored-column(#db6b55);
     }
     margin-top: 72px;
     &.transparent {
@@ -156,23 +174,41 @@
     border-radius: 50%;
     border: 1px solid $white;
     margin: 4px 20px 0 0;
-    &.column-gray {
+    &.column-color-1 {
       background-color: $n2-grey-color;
     }
-    &.column-purple {
+    &.column-color-2 {
+      background-color: #7d3e9b;
+    }
+    &.column-color-3 {
+      background-color: #c05785;
+    }
+    &.column-color-4 {
+      background-color: #a3a64f;
+    }
+    &.column-color-5 {
+      background-color: #d0236f;
+    }
+    &.column-color-6 {
       background-color: $s1b;
     }
-    &.column-pink {
-      background-color: $secondary-color1;
+    &.column-color-7 {
+      background-color: #4fb9b5;
     }
-    &.column-green {
-      background-color: $apple-green;
+    &.column-color-8 {
+      background-color: #b94f5e;
     }
-    &.column-dark {
-      background-color: $n1;
+    &.column-color-9 {
+      background-color: #545db1;
     }
-    &.column-blue {
-      background-color: $p1b;
+    &.column-color-10 {
+      background-color: #57ad56;
+    }
+    &.column-color-11 {
+      background-color: #dba555;
+    }
+    &.column-color-12 {
+      background-color: #db6b55;
     }
   }
 
@@ -490,8 +526,6 @@
   }
   .slick-prev{
     left: -45px;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
     &:before{
       left: 10px;
     }
@@ -501,8 +535,6 @@
   }
   .slick-next{
     right: -45px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
     &:before{
       right: 10px;
       @include rotate-180();
@@ -513,6 +545,7 @@
   }
   .slick-prev,
   .slick-next{
+    border-radius: 5px;
     color: $p1;
     top: 72px;
     z-index: 1;
@@ -530,7 +563,7 @@
       top: 20px;
     }
     &:hover{
-      background: $n3;
+      background: $p1;
       width: 80px;
     }
     @media #{$max-1200}{

@@ -38,12 +38,18 @@ Object.byString = function(o, s) {
         timeout, // slert error message timeout
         primaryColumn = $('#primary-column'), // container with parameter inputs
         colors = [
-            ' column-gray',
-            ' column-purple',
-            ' column-green',
-            ' column-pink',
-            ' column-dark',
-            ' column-blue'
+            ' column-color-1',
+            ' column-color-2',
+            ' column-color-3',
+            ' column-color-4',
+            ' column-color-5',
+            ' column-color-6',
+            ' column-color-7',
+            ' column-color-8',
+            ' column-color-9',
+            ' column-color-10',
+            ' column-color-11',
+            ' column-color-12'
         ], // array with color classes used to differentiate columns
         currentColumnColorIndex = -1, // current color index in color array used to set column background
         nextCircleColorIndex = currentColumnColorIndex, // color index used to display in circles
