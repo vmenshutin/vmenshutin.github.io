@@ -180,12 +180,6 @@ Object.byString = function(o, s) {
                 primaryColumnSlideUp();
             }
         });
-        // fall back for ios touch devices to hide tooltip on mouseleave
-        $('body').on('touchstart', function(e){
-            e.stopPropagation(); // prevent event from bubbling
-            if (!$(e.target).hasClass('event-param')) // if it is not a parameter input
-                $(".param-tooltip").fadeOut(200); // hide all tooltips
-        });
     };
 
     // sets listeners for api dropdowns
@@ -768,8 +762,7 @@ Object.byString = function(o, s) {
         self.tooltipDiv = $('<div class="param-tooltip">' + self.el.find('input').attr('id') + '</div>').hide();
         self.init = function(){
             self.el.append(self.tooltipDiv);
-            self.el.find('input').on('mouseenter touchstart', function(e){
-                $('.param-tooltip:visible').fadeOut(200);
+            self.el.find('input').on('mouseenter', function(){
                 self.tooltipDiv.fadeIn(200);
             });
             self.el.find('input').on('mouseleave', function(){
