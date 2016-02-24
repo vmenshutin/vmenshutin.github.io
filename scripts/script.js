@@ -170,8 +170,6 @@ Object.byString = function(o, s) {
             var newScreenWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
             if (getResponsiveId(screenWidth) != getResponsiveId(newScreenWidth)){
                 screenWidth = newScreenWidth;
-                if (screenWidth >= 768)
-                    primaryColumn.show();
                 slider.slick("unslick");
                 initSlider();
             }
@@ -223,7 +221,11 @@ Object.byString = function(o, s) {
 
     // renders first column with query parameters
     var renderPrimaryColumn = function(method, callback){
-        primaryColumnSlideUp(); //hide primary column
+        var isVisible = false;
+        if (primaryColumn.is(':visible')){
+            primaryColumnSlideUp(); //hide primary column
+            isVisible = true;
+        }
         setTimeout(function(){
             $('#selected-method-name').text(method.name);
             primaryColumn.find('.parameter-item').remove(); //remove all existing parameter fields
@@ -238,11 +240,11 @@ Object.byString = function(o, s) {
                 primaryColumn.append(element);
                 new Tooltip(element);
             }
-            if (screenWidth >= 768)
+            if (screenWidth >= 768 && isVisible)
                 primaryColumnSlideDown();
             if (callback)
                 callback();
-        },500);
+        }, isVisible ? 500 : 0);
     };
 
     // adds API dropdpwn to navigation bar

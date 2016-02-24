@@ -222,10 +222,12 @@
       &:hover{
         .param-tooltip{
           opacity: 1 !important;
+          visibility: visible !important;
         }
       }
       .param-tooltip{
         opacity: 0;
+        visibility: hidden;
         position: absolute;
         background: $n1-grey-color;
         color: $white;
@@ -271,6 +273,23 @@
     outline: none;
   }
 
+  #parameters-btn {
+    display: inline-block !important;
+    float: right;
+    width: 26px;
+    height: 26px;
+    background: url("../../assets/img/header/ic-menu-p-1.svg") no-repeat;
+    margin-top: 30px;
+    margin-right: -4px;
+    &.expanded {
+      background: url("/assets/img/header/ic-close-grey.svg") no-repeat;
+      background-position: 3px 2px;
+    }
+    @media #{$max-768}{
+      margin-top: 27px;
+    }
+  }
+
   @media #{$max-768} {
     .nav {
       margin: 0;
@@ -287,19 +306,6 @@
     }
     .button-blue {
       margin-bottom: 10px;
-    }
-    #parameters-btn {
-      display: inline-block !important;
-      float: right;
-      width: 26px;
-      height: 26px;
-      background: url("../../assets/img/header/ic-menu-p-1.svg") no-repeat;
-      margin-top: 24px;
-      margin-right: -5px;
-      &.expanded {
-        background: url("/assets/img/header/ic-close-grey.svg") no-repeat;
-        background-position: 3px 2px;
-      }
     }
   }
 
