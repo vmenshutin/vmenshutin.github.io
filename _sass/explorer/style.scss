@@ -88,8 +88,26 @@
     }
   }
 
-  #selected-method-name{
-    min-height: $line-height-h2;
+  #title {
+    #selected-method-name{
+      min-height: $line-height-h2;
+      float: left;
+      display: inline-block;
+      width: auto;
+    }
+    #doc-link{
+      padding: 0;
+      float: left;
+      width: 28px;
+      height: 28px;
+      background: url('../../assets/img/ic_doc_blue.svg') no-repeat;
+      position: relative;
+      margin-top: 39px;
+      outline: none !important;
+      @media #{$max-768} {
+        margin-top: 28px;
+      }
+    }
   }
 
   .api-column {

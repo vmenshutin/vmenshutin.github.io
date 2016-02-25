@@ -228,6 +228,7 @@ Object.byString = function(o, s) {
         }
         setTimeout(function(){
             $('#selected-method-name').text(method.name);
+            $('#doc-link').attr('href', method.documentation).fadeIn(100);
             primaryColumn.find('.parameter-item').remove(); //remove all existing parameter fields
             $('#primary-btn').text(method.method); //change text in 'run query button' (GET or POST)
             for (var param in method.parameters){ //render new paramater fields
