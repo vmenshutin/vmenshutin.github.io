@@ -108,8 +108,7 @@
       color: $white-70;
     }
     .color-circle{
-      margin-top: 11px;
-      margin-right: 5px;
+      margin: 11px 5px 0 10px;
     }
     &.column-color-1 {
       @include colored-column($n2-grey-color);
@@ -166,6 +165,16 @@
         }
       }
     }
+  }
+
+  .log-btn {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    background: url('../../assets/img/ic_console-active.svg') no-repeat;
+    margin-top: 6px;
+    outline: none !important;
   }
 
   .color-circle{

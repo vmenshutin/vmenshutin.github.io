@@ -350,8 +350,9 @@ Object.byString = function(o, s) {
     /* END OF INITIALIZATION PHASE FUNCTIONS */
 
     // column constructor
-    var Column = function(configObject, responseObject, index){
+    var Column = function(configObject, responseObject, index, guId){
         var self = this;
+        self.guId = guId;
         self.responseObject = responseObject;
         self.destinationObject = {};
         self.colorIndex = currentColumnColorIndex;
@@ -409,6 +410,9 @@ Object.byString = function(o, s) {
 
                     title.append(mapBtn);
                 }
+
+                if (i === 0) // append link to log to the first subcolumn
+                    title.append($('<a href="#" data-guid="' + self.guId + '" class="log-btn pull-right"></a>'));
 
                 if (subcolumn["collection"]){
                     var itemCount = 0, // variable to store items count
@@ -481,42 +485,58 @@ Object.byString = function(o, s) {
                         setTimeout(function(){ // timeout wait while slider animates
                             self.removeAllColumnsToRight(selfIndex);
                             var response = ($(e.target).attr("subcolumn-path") && index) ? (Object.byString(responseObject, $(e.target).attr("subcolumn-path") + '.' + index)): responseObject;
-                            new Column(Object.byString(configObject, $(e.target).attr("expand-path")), response, $(e.target).attr("index"));
+                            new Column(Object.byString(configObject, $(e.target).attr("expand-path")), response, $(e.target).attr("index"), self.guId);
                         }, 800);
                     });
+                    return false;
                 }
-                else {
-                    if ($(e.target).hasClass('expand-new-method')){ // handles click event on More button
-                        e.preventDefault();
-                        var method = findMethodInBase($(e.target).attr("method")),
-                            paramArray = [{ // parameter input to be filled in. in this case only id parameter needs to be filled in
-                                'id' : 'id',
-                                'value' : $(e.target).attr("data-id")
-                            }];
-                        changeSelectedMethod(method, paramArray, function(){// change method selected above and fill in id parameter
-                            var url = formPrimaryURL(method);
-                            self.column.find('.list-group-item').removeClass('selected'); // unselect selected fields in column
-                            currentColumnColorIndex = $(e.target).attr('next-color-index'); // reset current column color index
-                            nextCircleColorIndex = currentColumnColorIndex; // reset next circle color index
-                            spinner.show();
-                            sendRequest(url, method.method, function(response){
-                                self.makeColumnLast();
-                                setTimeout(function(){
-                                    self.removeAllColumnsToRight(selfIndex);
-                                    new Column(CONFIG[method.id], response);
-                                }, 800);
-                            });
-                        });
 
-                    }
-                    else { // if thumbnail is clicked
-                        if ($(e.target).hasClass('subcolumn-thumbnail')){
-                            var popup =  $("#image-popup");
-                            popup.find('#image-element').attr('src', $(e.target).attr('src'));
-                            popup.modal();
-                        }
-                    }
+                if ($(e.target).hasClass('expand-new-method')){ // handles click event on More button
+                    e.preventDefault();
+                    var method = findMethodInBase($(e.target).attr("method")),
+                        paramArray = [{ // parameter input to be filled in. in this case only id parameter needs to be filled in
+                            'id' : 'id',
+                            'value' : $(e.target).attr("data-id")
+                        }];
+                    changeSelectedMethod(method, paramArray, function(){// change method selected above and fill in id parameter
+                        var url = formPrimaryURL(method);
+                        self.column.find('.list-group-item').removeClass('selected'); // unselect selected fields in column
+                        currentColumnColorIndex = $(e.target).attr('next-color-index'); // reset current column color index
+                        nextCircleColorIndex = currentColumnColorIndex; // reset next circle color index
+                        spinner.show();
+                        sendRequest(url, method.method, function(response, guid){
+                            self.makeColumnLast();
+                            setTimeout(function(){
+                                self.removeAllColumnsToRight(selfIndex);
+                                new Column(CONFIG[method.id], response, null, guid);
+                            }, 800);
+                        });
+                    });
+                    return false;
                 }
+
+                if ($(e.target).hasClass('subcolumn-thumbnail')){ // if thumbnail is clicked
+                    var popup =  $("#image-popup");
+                    popup.find('#image-element').attr('src', $(e.target).attr('src'));
+                    popup.modal();
+                    return false;
+                }
+
+                if ($(e.target).hasClass('log-btn')){ // if log button is pressed
+                    e.preventDefault();
+                    spinner.show();
+                    var logItem = $('#req-res-container').find('[href='+ '#' + self.guId + ']');
+                    if (!logItem.attr('aria-expanded') || logItem.attr('aria-expanded') === 'false')
+                        logItem.trigger('click');
+                    setTimeout(function(){
+                        spinner.hide();
+                        $('html, body').animate({ // scroll to slider
+                            scrollTop: logItem.offset().top - 10
+                        }, 1000);
+                    }, 500);
+                    return false;
+                }
+
             });
         };
         self.makeColumnLast = function(){ // slides to make current column last within current view
@@ -664,13 +684,13 @@ Object.byString = function(o, s) {
         currentColumnColorIndex = getNextColorIndex();
         var url = formPrimaryURL(selectedMethod);
         spinner.show();
-        sendRequest(url, selectedMethod.method, function(response){
+        sendRequest(url, selectedMethod.method, function(response, guid){
             slider.slick('slickGoTo', 0);
             setTimeout(function(){
                 while (getColumnCount() > 0 ){
                     slider.slick("slickRemove", 0);
                 }
-                new Column(CONFIG[selectedMethod.id], response);
+                new Column(CONFIG[selectedMethod.id], response, null, guid);
                 scrollToSlider();
             }, 1000);
         });
@@ -773,7 +793,7 @@ Object.byString = function(o, s) {
                 $('#req-res-container').prepend(reqResItem);
                 $('#clear-req-resp').fadeIn(1000);
 
-                callback(response);
+                callback(response, guid);
             },
             error: function(xhr, status, err) {
                 spinner.hide();
