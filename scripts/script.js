@@ -140,6 +140,14 @@ Object.byString = function(o, s) {
             e.preventDefault();
             clearParams();
         });
+        $("#reformat-json").on('click', function(e){
+            e.preventDefault();
+            prettyfyJSON();
+        });
+        $("#clear-json").on('click', function(e){
+            e.preventDefault();
+            $('#post-json-area').val('');
+        });
         $('#clear-req-resp').on('click', function(e){
             e.preventDefault();
             var container = $('#req-res-container');
@@ -158,7 +166,7 @@ Object.byString = function(o, s) {
                 sendPrimaryRequest();
             }
         });
-        $('#error-alert').on("shown.bs.modal", function(){
+        $('#error-alert, #success-alert').on("shown.bs.modal", function(){
             var me = $(this);
             timeout = setTimeout(function(){
                 me.modal("hide");
@@ -182,6 +190,16 @@ Object.byString = function(o, s) {
             }
             else {
                 primaryColumnSlideUp();
+            }
+        });
+        $('#json-btn').on('click', function(e){
+            e.preventDefault();
+            var btn = $(this);
+            if (!btn.hasClass('expanded')){
+                dataJSONSlideDown();
+            }
+            else {
+                dataJSONSlideUp();
             }
         });
     };
@@ -219,18 +237,56 @@ Object.byString = function(o, s) {
         }, 500);
     };
 
+    // slides up post json container
+    var dataJSONSlideUp = function(){
+        $('#post-json-container').slideUp(500);
+        setTimeout(function(){
+            $('#json-btn').removeClass('expanded');
+        }, 500);
+    };
+
+    // slides down post json container
+    var dataJSONSlideDown = function(){
+        $('#post-json-container').slideDown(500);
+        setTimeout(function(){
+            $('#json-btn').addClass('expanded');
+        }, 500);
+    };
+
     // renders first column with query parameters
     var renderPrimaryColumn = function(method, callback){
-        var isVisible = false;
+        var isPrimaryVisible = false,
+            primaryBtn = $('#primary-btn'),
+            postJsonArea = $('#post-json-area'),
+            postJson = $('#post-json'),
+            isJsonAreaVisible = postJsonArea.is(':visible'),
+            isJsonVisible = postJson.is(':visible');
+
         if (primaryColumn.is(':visible')){
             primaryColumnSlideUp(); //hide primary column
-            isVisible = true;
+            isPrimaryVisible = true;
         }
+
+        if (isJsonVisible){
+            if (method.method !== "POST"){
+                dataJSONSlideUp();
+                setTimeout(function(){
+                    postJson.slideUp(100);
+                }, 400);
+            }
+            else {
+                if (postJsonArea.is(':visible')) {
+                    dataJSONSlideUp();
+                    isJsonAreaVisible = true;
+                }
+            }
+        }
+
         setTimeout(function(){
             $('#selected-method-name').text(method.name);
             $('#doc-link').attr('href', method.documentation).fadeIn(100);
             primaryColumn.find('.parameter-item').remove(); //remove all existing parameter fields
-            $('#primary-btn').text(method.method); //change text in 'run query button' (GET or POST)
+            primaryBtn.text(method.method).removeClass('post'); //change text in 'run query button' (GET or POST)
             for (var param in method.parameters){ //render new paramater fields
                 var element = $('<div class="col-lg-3 col-sm-6 col-xs-12 parameter-item"></div>'),
                     input = $('<input type="text" class="form-control event-param" placeholder="'
@@ -241,20 +297,28 @@ Object.byString = function(o, s) {
                 primaryColumn.append(element);
                 new Tooltip(element);
             }
-            if (screenWidth >= 768 && isVisible)
+            if (method.method === "POST"){
+                postJsonArea.val('');
+                postJson.show();
+                primaryBtn.addClass('post');
+                if (screenWidth >= 768)
+                    if (isJsonAreaVisible || !isJsonVisible)
+                        dataJSONSlideDown();
+            }
+            if (screenWidth >= 768 && isPrimaryVisible)
                 primaryColumnSlideDown();
             if (callback)
                 callback();
-        }, isVisible ? 500 : 0);
+        }, isPrimaryVisible ? 500 : 0);
     };
 
     // adds API dropdpwn to navigation bar
     var addApiDropdown = function(apiName, selected){
         var dropDown = $('<li class="dropdown api-dropdown"></li>'),
             button = $('<button class="dropdown-toggle' + (selected ? ' selected-group' : '') + '" type="button" id="'
-                    + apiName + '-dropdown' + '" data-toggle="dropdown"><h4>' + apiName + '</h4></button>'),
+                    + apiName.replace(/\s/g, '') + '" data-toggle="dropdown"><h4>' + apiName + '</h4></button>'),
             caret = $('<span class="caret"></span>'),
-            ul = $('<ul class="dropdown-menu" role="menu" aria-labelledby="' + apiName + '-dropdown' +  '">');
+            ul = $('<ul class="dropdown-menu" role="menu" aria-labelledby="' + apiName +  '">');
 
         for (var method in base[apiName]) {
             var li = $('<li role="presentation"><a class="select-default-method" api-name="'
@@ -662,7 +726,13 @@ Object.byString = function(o, s) {
         };
         if (selectedMethod.id != method.id){ // if new method is called rerender the parameters container
             renderPrimaryColumn(method, function(){
+                var selectedGroup = $('.selected-group'),
+                    apiId = method.category.replace(/\s/g, '');
                 selectedMethod = method;
+                if (selectedGroup.attr('id') !== apiId){ // change highlighted dropdown if needed
+                    selectedGroup.removeClass('selected-group');
+                    $('#' + apiId).addClass('selected-group');
+                }
                 fillInInputVals();
                 setTimeout(function(){ // restore previous scroll position as per slider when primary column slides down (in 500ms)
                     scroll(); // scroll to slider if necessary and run callback in 500 ms
@@ -778,6 +848,8 @@ Object.byString = function(o, s) {
             type: method,
             url: url,
             async: true,
+            dataType: "json",
+            data: $('#post-json').is(':visible') ? prettyfyJSON() : null,
             success: function(response, textStatus, jqXHR) {
                 //generate unique id for each accordion item
                 var guid = guId(),
@@ -794,7 +866,10 @@ Object.byString = function(o, s) {
                 $('#req-res-container').prepend(reqResItem);
                 $('#clear-req-resp').fadeIn(1000);
 
-                callback(response, guid);
+                if (this.data) // if there was any data posted - just show success popup
+                    $('#success-alert').modal();
+                else
+                    callback(response, guid);
             },
             error: function(xhr, status, err) {
                 spinner.hide();
@@ -830,6 +905,25 @@ Object.byString = function(o, s) {
             self.el.append(self.tooltipDiv);
         };
         self.init();
+    };
+
+    // reformat json string to display it properly
+    var prettyfyJSON = function() {
+        var textarea = document.getElementById('post-json-area'),
+            ugly = textarea.value,
+            obj = {},
+            pretty = "";
+
+        try {
+            obj = JSON.parse(ugly);
+            pretty = JSON.stringify(obj, undefined, 4);
+            textarea.value = pretty;
+        }
+        catch (e){
+            return null;
+        }
+
+        return JSON.stringify(obj);
     };
 
 })();

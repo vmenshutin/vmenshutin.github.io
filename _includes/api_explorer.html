@@ -16,6 +16,23 @@
             </div>
         </div>
     </div>
+    <!--bootstrap success popup-->
+    <div id="success-alert" class="modal fade" role="dialog">
+        <div class="vertical-alignment-helper">
+            <div class="modal-dialog vertical-align-center">
+                <!-- Modal content-->
+                <div class="modal-content success">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title" id="success-message">Data posted successfully :)</h4>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-default btn-small" data-dismiss="modal" style="top: 0 !important;">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!--bootstrap image popup-->
     <div class="modal fade" id="image-popup" role="dialog">
         <div class="vertical-alignment-helper">
@@ -103,6 +120,33 @@
         <div class="row-container">
             <div class="col-xs-12">
                <div class="separator"></div>
+            </div>
+        </div>
+    </div>
+    <!--json post-->
+    <div id="post-json" style="display: none;">
+        <!--json post header-->
+        <div class="row group-start">
+            <div class="row-container">
+                <div class="col-xs-12">
+                    <a href="#" id="json-btn"></a>
+                    <h3 style="float: left;">Post JSON</h3>
+                    <a href="#" class="btn-default btn-small" id="reformat-json">Reformat JSON Structure</a>
+                    <a href="#" class="btn-default btn-small" id="clear-json">Clear JSON</a>
+                </div>
+            </div>
+        </div>
+        <!--json post textarea-->
+        <div class="row" id="post-json-container" style="display: none;">
+            <div class="row-container">
+                <div class="col-xs-12">
+                    <textarea id="post-json-area" style="width: 100%; height: 300px; resize: vertical; padding: 15px;"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row-container">
+            <div class="col-xs-12">
+                <div class="separator"></div>
             </div>
         </div>
     </div>

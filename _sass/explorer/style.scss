@@ -156,7 +156,7 @@
       @include colored-column(#545db1);
     }
     &.column-color-10 {
-      @include colored-column(#57ad56);
+      @include colored-column($green);
     }
     &.column-color-11 {
       @include colored-column(#dba555);
@@ -229,7 +229,7 @@
       background-color: #545db1;
     }
     &.column-color-10 {
-      background-color: #57ad56;
+      background-color: $green;
     }
     &.column-color-11 {
       background-color: #dba555;
@@ -241,6 +241,10 @@
 
   h3 {
     color: $n2-grey-color;
+  }
+
+  textarea {
+    outline-color: $green;
   }
 
   #primary-column{
@@ -300,7 +304,8 @@
     outline: none;
   }
 
-  #parameters-btn {
+  #parameters-btn,
+  #json-btn {
     display: inline-block !important;
     float: right;
     width: 26px;
@@ -449,6 +454,9 @@
     background: $p1;
     text-decoration: none;
     padding: 12px 26px;
+    &.post {
+      background: $green !important;
+    }
   }
 
   .btn-small {
@@ -530,6 +538,11 @@
   pointer-events:none;
 }
 .modal-content {
+  &.success {
+    h4 {
+      color: $green;
+    }
+  }
   /* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
   width:inherit;
   height:inherit;
