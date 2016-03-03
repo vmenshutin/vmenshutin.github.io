@@ -466,3 +466,53 @@ pre {
   background-position-y: -2px;
   background-image: url("/assets/img/products-and-docs/ic-copied.svg");
 }
+
+#feedback-modal {
+  label {
+    color: $n3;
+    /*margin-bottom: 8px;*/
+    font-family: $font-bold-p;
+    font-weight: normal;
+  }
+  input, select {
+    margin-bottom: 24px;
+    border-radius: 4px;
+    outline: none;
+    height: 48px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+  textarea {
+    border-radius: 4px;
+  }
+  input, select, textarea {
+    width: 100%;
+    border: 1px solid #CCCCCC;
+    background-color: #FFFFFF;
+    padding: 8px 16px;
+    &:focus {
+      border-color: $p1;
+      outline: 0px none;
+    }
+  }
+  .modal-content {
+    .modal-header,
+    .modal-body {
+      text-align: inherit;
+    }
+    .modal-footer {
+      text-align: right;
+    }
+  }
+  .custom_select__placeholder {
+    margin-bottom: 0;
+    cursor: pointer;
+  }
+  .custom_select__field {
+    margin-bottom: 0;
+    padding-right: 50px;
+  }
+  .close {
+    opacity: inherit;
+  }
+}
