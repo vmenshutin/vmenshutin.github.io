@@ -2,7 +2,7 @@ var venueDetails = function(version){
         return [
             {
                 "title": "Venue",
-                "path": "_embedded.venue",
+                "path": "_embedded.venue" + (version ? "s" : ""),
                 "expandsTo": "discovery." + (version ? (version + ".") : "") + "venues.id.get",
                 "fields": [
                     {
@@ -21,7 +21,7 @@ var venueDetails = function(version){
             },
             {
                 "title": "Address",
-                "path": "_embedded.venue",
+                "path": "_embedded.venue" + (version ? "s" : ""),
                 "map": { // available only for subcolumn (not collections)
                     "coordinates" : {
                         "latitude" : "latitude",
@@ -93,11 +93,11 @@ categoryDetails = function(version) {
     ]
 },
 
-attractionDetails = function(version){
-    return [
+attractionDetails = function(version, isPrimary, notExpandable){
+    var attrObj = [
         {
             "title": "Attraction",
-            "path": "_embedded.attractions",
+            "path": (isPrimary ? "" : "_embedded.attractions"),
             "expandsTo": "discovery." + (version ? (version + ".") : "") + "attractions.id.get",
             "fields": [
                 {
@@ -111,7 +111,110 @@ attractionDetails = function(version){
                 }
             ]
         }
-    ]
+    ];
+
+    if (notExpandable)
+        delete attrObj[0].expandsTo;
+
+    if (version) {
+        attrObj.push({
+            "title": "Images",
+            "path": (isPrimary ? "" : "_embedded.attractions"),
+            "collection": true,
+            "fields": [
+                {
+                    "id": "ratio",
+                    "path": "images",
+                    "thumbnail" : { // if thumbnail is shown. if this field is present - image pop-up will show on click
+                        "id" : "url", // name of the field with url
+                        "path" : '' // path to field with src
+                    },
+                    "expandsTo": [
+                        {
+                            "title": "Image", // subcolumn title (required)
+                            "path": "images", // path to fields (required)
+                            "fields": [ // if collection is true there should be only 1 field to iterate through (required)
+                                {
+                                    "id": "ratio",
+                                    "thumbnail" : { // if thumbnail is shown. if this field is present - image pop-up will show on click
+                                        "id" : "url", // name of the field with url
+                                        "path" : '' // path to field with src
+                                    }
+                                },
+                                {
+                                    "id": "url"
+                                },
+                                {
+                                    "id": "height"
+                                },
+                                {
+                                    "id": "width"
+                                },
+                                {
+                                    "id": "fallback"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        });
+
+        attrObj.push({
+            "title": "Classifications",
+            "path": (isPrimary ? "" : "_embedded.attractions"),
+            "collection": true,
+            "fields": [{
+                "path": "classifications",
+                "expandsTo": [
+                    {
+                        "title": "Genre", // subcolumn title (required)
+                        "path": "classifications", // path to fields (required)
+                        "fields": [
+                            {
+                                "id": "name",
+                                "path": "genre"
+                            },
+                            {
+                                "id": "id",
+                                "path": "genre"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Segment", // subcolumn title (required)
+                        "path": "classifications", // path to fields (required)
+                        "fields": [
+                            {
+                                "id": "name",
+                                "path": "segment"
+                            },
+                            {
+                                "id": "id",
+                                "path": "segment"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "SubGenre", // subcolumn title (required)
+                        "path": "classifications", // path to fields (required)
+                        "fields": [
+                            {
+                                "id": "name",
+                                "path": "subGenre"
+                            },
+                            {
+                                "id": "id",
+                                "path": "subGenre"
+                            }
+                        ]
+                    }
+                ]
+            }]
+        });
+    }
+
+    return attrObj;
 },
 
 pageDetails = {
@@ -572,6 +675,9 @@ var CONFIG = {
                                 },
                                 {
                                     "id": "name"
+                                },
+                                {
+                                    "id": "test"
                                 }
                             ]
                         },
@@ -584,7 +690,15 @@ var CONFIG = {
                                     "path": "dates.start"
                                 },
                                 {
+                                    "id": "localTime",
+                                    "path": "dates.start"
+                                },
+                                {
                                     "id": "localDate",
+                                    "path": "dates.end"
+                                },
+                                {
+                                    "id": "localTime",
                                     "path": "dates.end"
                                 },
                                 {
@@ -597,26 +711,56 @@ var CONFIG = {
                             ]
                         },
                         {
+                            "title": "Images",
+                            "path": "_embedded.events",
+                            "collection": true,
+                            "fields": [
+                                {
+                                    "id": "ratio",
+                                    "path": "images",
+                                    "thumbnail" : { // if thumbnail is shown. if this field is present - image pop-up will show on click
+                                        "id" : "url", // name of the field with url
+                                        "path" : '' // path to field with src
+                                    },
+                                    "expandsTo": [
+                                        {
+                                            "title": "Image", // subcolumn title (required)
+                                            "path": "images", // path to fields (required)
+                                            "fields": [ // if collection is true there should be only 1 field to iterate through (required)
+                                                {
+                                                    "id": "ratio",
+                                                    "thumbnail" : { // if thumbnail is shown. if this field is present - image pop-up will show on click
+                                                        "id" : "url", // name of the field with url
+                                                        "path" : '' // path to field with src
+                                                    }
+                                                },
+                                                {
+                                                    "id": "url"
+                                                },
+                                                {
+                                                    "id": "height"
+                                                },
+                                                {
+                                                    "id": "width"
+                                                },
+                                                {
+                                                    "id": "fallback"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
                             "title": "Venues",
                             "path": "_embedded.events",
                             "collection": true,
                             "fields": [
                                 {
                                     "id": "name",
-                                    "path": "_embedded.venue",
+                                    "path": "_embedded.venues",
                                     "expandsTo": venueDetails('v2')
-                                }
-                            ]
-                        },
-                        {
-                            "title": "Categories",
-                            "path": "_embedded.events",
-                            "collection": true,
-                            "fields": [
-                                {
-                                    "id": "name",
-                                    "path": "_embedded.categories",
-                                    "expandsTo" : categoryDetails('v2')
                                 }
                             ]
                         },
@@ -631,6 +775,58 @@ var CONFIG = {
                                     "expandsTo": attractionDetails('v2')
                                 }
                             ]
+                        },
+                        {
+                            "title": "Classifications",
+                            "path": "_embedded.events",
+                            "collection": true,
+                            "fields": [{
+                                "path": "classifications",
+                                "expandsTo": [
+                                    {
+                                        "title": "Genre", // subcolumn title (required)
+                                        "path": "classifications", // path to fields (required)
+                                        "fields": [
+                                            {
+                                                "id": "name",
+                                                "path": "genre"
+                                            },
+                                            {
+                                                "id": "id",
+                                                "path": "genre"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "title": "Segment", // subcolumn title (required)
+                                        "path": "classifications", // path to fields (required)
+                                        "fields": [
+                                            {
+                                                "id": "name",
+                                                "path": "segment"
+                                            },
+                                            {
+                                                "id": "id",
+                                                "path": "segment"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "title": "SubGenre", // subcolumn title (required)
+                                        "path": "classifications", // path to fields (required)
+                                        "fields": [
+                                            {
+                                                "id": "name",
+                                                "path": "subGenre"
+                                            },
+                                            {
+                                                "id": "id",
+                                                "path": "subGenre"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }]
                         }
                     ]
                 }
@@ -639,10 +835,10 @@ var CONFIG = {
         pageDetails
     ],
     "discovery.v2.events.id.get": [
-        {
-            "title": "Events details", // subcolumn title (required)
-            "path": "", // path to fields (required)
-            "fields": [ // if collection is true there should be only 1 field to iterate through (required)
+        { // subcolumn
+            "title": "Event Details",
+            "path": '',
+            "fields": [
                 {
                     "id": "id"
                 },
@@ -653,21 +849,32 @@ var CONFIG = {
                     "id": "name"
                 },
                 {
-                    "id": "0",
-                    "path" : "promoterId"
+                    "id": "test"
                 }
             ]
         },
         {
             "title": "Dates",
-            "path": "dates",
+            "path": 'dates',
             "fields": [
                 {
                     "id": "localDate",
                     "path": "start"
                 },
                 {
-                    "id": "timezone"
+                    "id": "localTime",
+                    "path": "start"
+                },
+                {
+                    "id": "localDate",
+                    "path": "end"
+                },
+                {
+                    "id": "localTime",
+                    "path": "end"
+                },
+                {
+                    "id": "timeZone"
                 },
                 {
                     "id": "code",
@@ -676,24 +883,56 @@ var CONFIG = {
             ]
         },
         {
-            "title": "Venues",
-            "path": "_embedded.venue",
+            "title": "Images",
+            "path": "images",
             "collection": true,
             "fields": [
                 {
-                    "id": "name",
-                    "expandsTo": venueDetails('v2')
+                    "id": "ratio",
+                    "path": "",
+                    "thumbnail" : { // if thumbnail is shown. if this field is present - image pop-up will show on click
+                        "id" : "url", // name of the field with url
+                        "path" : '' // path to field with src
+                    },
+                    "expandsTo": [
+                        {
+                            "title": "Image", // subcolumn title (required)
+                            "path": "images", // path to fields (required)
+                            "fields": [ // if collection is true there should be only 1 field to iterate through (required)
+                                {
+                                    "id": "ratio",
+                                    "thumbnail" : { // if thumbnail is shown. if this field is present - image pop-up will show on click
+                                        "id" : "url", // name of the field with url
+                                        "path" : '' // path to field with src
+                                    }
+                                },
+                                {
+                                    "id": "url"
+                                },
+                                {
+                                    "id": "height"
+                                },
+                                {
+                                    "id": "width"
+                                },
+                                {
+                                    "id": "fallback"
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         },
         {
-            "title": "Categories",
-            "path": "_embedded.categories",
+            "title": "Venues",
+            "path": "_embedded.venues",
             "collection": true,
             "fields": [
                 {
                     "id": "name",
-                    "expandsTo": categoryDetails('v2')
+                    "path": "",
+                    "expandsTo": venueDetails('v2')
                 }
             ]
         },
@@ -704,14 +943,62 @@ var CONFIG = {
             "fields": [
                 {
                     "id": "name",
+                    "path": "",
                     "expandsTo": attractionDetails('v2')
                 }
             ]
         },
         {
-            "title": "Get Images",
-            "path": "",
-            "expandsTo": "discovery.v2.events.id.images.get"
+            "title": "Classifications",
+            "path": "classifications",
+            "collection": true,
+            "fields": [{
+                "path": "",
+                "expandsTo": [
+                    {
+                        "title": "Genre", // subcolumn title (required)
+                        "path": "classifications", // path to fields (required)
+                        "fields": [
+                            {
+                                "id": "name",
+                                "path": "genre"
+                            },
+                            {
+                                "id": "id",
+                                "path": "genre"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "Segment", // subcolumn title (required)
+                        "path": "classifications", // path to fields (required)
+                        "fields": [
+                            {
+                                "id": "name",
+                                "path": "segment"
+                            },
+                            {
+                                "id": "id",
+                                "path": "segment"
+                            }
+                        ]
+                    },
+                    {
+                        "title": "SubGenre", // subcolumn title (required)
+                        "path": "classifications", // path to fields (required)
+                        "fields": [
+                            {
+                                "id": "name",
+                                "path": "subGenre"
+                            },
+                            {
+                                "id": "id",
+                                "path": "subGenre"
+                            }
+                        ]
+                    }
+                ]
+            }]
         }
     ],
     "discovery.v2.events.id.images.get": [
@@ -780,23 +1067,7 @@ var CONFIG = {
         },
         pageDetails
     ],
-    "discovery.v2.attractions.id.get": [
-        {
-            "title": "Attraction Details", // subcolumn title (required)
-            "path": "", // path to fields (required)
-            "fields": [ // if collection is true there should be only 1 field to iterate through (required)
-                {
-                    "id": "locale"
-                },
-                {
-                    "id": "name"
-                },
-                {
-                    "id": "id"
-                }
-            ]
-        }
-    ],
+    "discovery.v2.attractions.id.get": attractionDetails('v2', true, true),
     "discovery.v2.categories.get": [
         {
             "title": "Categories", // subcolumn title (required)
