@@ -444,7 +444,7 @@ Object.byString = function(o, s) {
                     title.append($('<a href="#" class="pull-right expand-new-method" ' // more button
                         + 'method="' + subcolumn["expandsTo"] + '" '
                         + 'next-color-index="' + nextIndex + '" '
-                        + 'data-id="' + destinationObject.id + '"></a>'))
+                        + 'data-id="' + (destinationObject.id ? destinationObject.id : (destinationObject.segment ? destinationObject.segment.id : 'undefined')) + '"></a>'))
                         .append($('<p class="pull-right color-circle' // color circle
                         + colors[nextIndex] + '"></p>'));
                 }
