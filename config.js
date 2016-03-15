@@ -703,6 +703,9 @@ var CONFIG = {
                                     "id": "id"
                                 },
                                 {
+                                    "id": "url"
+                                },
+                                {
                                     "id": "locale"
                                 },
                                 {
@@ -823,6 +826,9 @@ var CONFIG = {
             "fields": [
                 {
                     "id": "id"
+                },
+                {
+                    "id": "url"
                 },
                 {
                     "id": "locale"
