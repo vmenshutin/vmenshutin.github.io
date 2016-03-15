@@ -641,7 +641,7 @@ Object.byString = function(o, s) {
                     + 'size=' + width + 'x' + height + '&' //size
                     + 'format=JPEG' + '&'// image format
                     + 'markers=color:red%7Clabel:V%7C' + coordinates + '&' // marker with the same coordinates with V label
-                    + 'key=AIzaSyB3-oFbQWw_jEcG7r7WGdi99jNT3DqvRas'; // api key (vmfreakmonkey@gmail.com)
+                    + 'key=AIzaSyBQrJ5ECXDaXVlICIdUBOe8impKIGHDzdA'; // api key (vmfreakmonkey@gmail.com)
 
             return $('<img data-lat="' + lat + '" data-long="' + lng + '" data-address="' + address + '" class="api-column-map-image" src="' + url + '">');
         }
