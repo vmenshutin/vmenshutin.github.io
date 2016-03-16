@@ -11,6 +11,8 @@
             alertTimeout: null,
             hasBackground: $('.top-bar').hasClass('bg-header') ? true : false,
             logo: $('#header-logo img'),
+            expandMenuBar: $('#expand-menu'),
+            expandSections: $('.expand-section'),
             show: function(){
                 var self = this;
                 if (!self.menuBtn.hasClass('tm-close')){
@@ -56,6 +58,22 @@
                         && menuCloseBtn.length) {
                         self.hide();
                     }
+                });
+
+                $('.expandable').on('mouseenter', function(){
+                    $(this).addClass('expanded');
+                    self.expandSections.hide();
+                    self.expandMenuBar.find('#expand-' + $(this).attr('data-expands-to')).show();
+                    self.expandMenuBar.addClass('expanded');
+                }).on('mouseleave', function(){
+                    $(this).removeClass('expanded');
+                    self.expandMenuBar.removeClass('expanded');
+                });
+
+                self.expandMenuBar.on('mouseleave', function(){
+                    $(this).removeClass('expanded');
+                }).on('mouseenter', function(){
+                    $(this).addClass('expanded');
                 });
             }
         };
