@@ -5,6 +5,7 @@
     <!-- Discovery REST API Version 1 -->
 
     <!-- Search Events -->
+    <!--
     <resource path="discovery/v1/events.{format}">
       <param name="format" required="true" type="xsd:string" style="template" default="json">
         <doc>API Response Format</doc>
@@ -90,7 +91,9 @@
                 </doc>
       </method>
     </resource>
+     -->
     <!-- Event Details -->
+    <!--
     <resource path="discovery/v1/events/{id}.{format}">
       <param name="id" required="true" type="xsd:string" style="template" default="29004F223C406ABF">
         <doc>Event ID</doc>
@@ -127,7 +130,9 @@
                 </doc>
       </method>
     </resource>
+    -->
     <!-- Event Images -->
+    <!--
     <resource path="discovery/v1/events/{id}/images.{format}">
       <param name="id" required="true" type="xsd:string" style="template" default="0B004F0401BD55E5">
         <doc>Event ID</doc>
@@ -146,7 +151,9 @@
                 </doc>
       </method>
     </resource>
+     -->
     <!-- Search Attractions -->
+    <!--
     <resource path="discovery/v1/attractions.{format}">
       <param name="format" required="true" type="xsd:string" style="template" default="json">
         <doc>API Response Format</doc>
@@ -199,7 +206,9 @@
                 </doc>
       </method>
     </resource>
+    -->
     <!-- Attraction Details -->
+    <!--
     <resource path="discovery/v1/attractions/{id}.{format}">
       <param name="id" required="true" type="xsd:string" style="template" default="768011">
         <doc>Attraction ID</doc>
@@ -236,7 +245,9 @@
                 </doc>
       </method>
     </resource>
+    -->
     <!-- Search Categories -->
+    <!--
     <resource path="discovery/v1/categories.{format}">
       <param name="format" required="true" type="xsd:string" style="template" default="json">
         <doc>API Response Format</doc>
@@ -289,7 +300,9 @@
                 </doc>
       </method>
     </resource>
+    -->
     <!-- Category Details -->
+    <!--
     <resource path="discovery/v1/categories/{id}.{format}">
       <param name="id" required="true" type="xsd:string" style="template" default="203">
         <doc>Category ID</doc>
@@ -325,7 +338,9 @@
                 </doc>
       </method>
     </resource>
+    -->
     <!-- Search Venues -->
+    <!--
     <resource path="discovery/v1/venues.{format}">
       <param name="format" required="true" type="xsd:string" style="template" default="json">
         <doc>API Response Format</doc>
@@ -378,7 +393,9 @@
                 </doc>
       </method>
     </resource>
+    -->
     <!-- Venue Details -->
+    <!--
     <resource path="discovery/v1/venues/{id}.{format}">
       <param name="id" required="true" type="xsd:string" style="template" default="90150">
         <doc>Venue ID</doc>
@@ -415,6 +432,7 @@
                 </doc>
       </method>
     </resource>
+    -->
 
     <!-- Discovery REST API Version 2 -->
 
